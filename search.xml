@@ -4,26 +4,29 @@
   
     
     <entry>
-      <title>我的第一篇博客</title>
-      <link href="/2025/09/01/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/"/>
-      <url>/2025/09/01/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87%E5%8D%9A%E5%AE%A2/</url>
+      <title>OSCP+学习经验分享</title>
+      <link href="/2025/09/01/OSCP+%E5%AD%A6%E4%B9%A0%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/"/>
+      <url>/2025/09/01/OSCP+%E5%AD%A6%E4%B9%A0%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/</url>
       
-        <content type="html"><![CDATA[]]></content>
-      
-      
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Hello World</title>
-      <link href="/2025/09/01/hello-world/"/>
-      <url>/2025/09/01/hello-world/</url>
-      
-        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+        <content type="html"><![CDATA[<h1 id="什么是OSCP"><a href="#什么是OSCP" class="headerlink" title="什么是OSCP+"></a>什么是OSCP+</h1><p>对于OSCP+，相信还是有很多小伙伴甚至是从事网安的工作者都还不够了解，或许你有可能是从朋友那里听说过，或许是看到一篇技术文章提到过，那么下面，就让我以比较官方的说明来表达，究竟什么是OSCP+？他究竟有什么作用？</p><blockquote><p>OSCP+（Offensive Security Certified Professional Plus）是由全球网络安全领域权威机构Offensive Security推出的进阶版实战型渗透测试认证，作为经典OSCP（Offensive Security Certified Professional）认证的升级方向，它聚焦于更复杂、更贴近企业真实场景的高级渗透测试与红队作战能力培养。该认证核心覆盖高级漏洞利用技术（如针对复杂应用、物联网设备的漏洞挖掘与利用）、多阶段攻击链构建（含初始 foothold 获取、横向移动、权限提升、数据窃取等全流程战术设计）、防御机制规避（如绕过EDR、SIEM监控、防火墙策略等），以及企业级目标的持续渗透与权限维持等深度技能；其考核采用纯实战模式，要求考生在限定时间内对多个相互关联的模拟企业网络目标完成渗透测试，并提交包含详细技术步骤、漏洞分析、攻击路径与修复建议的专业报告，以此全面验证考生的实战操作能力与规范流程意识。凭借严苛的认证标准和对高级实战技能的精准考察，OSCP+在全球网络安全行业具有极高认可度，是企业选拔高级渗透测试工程师、红队成员、网络安全攻防专家等岗位的核心资质依据，也是从业者证明自身具备应对复杂网络安全挑战、执行深度渗透测试项目能力的重要标志。</p></blockquote><h1 id="我的OSCP-启蒙之路"><a href="#我的OSCP-启蒙之路" class="headerlink" title="我的OSCP+启蒙之路"></a>我的OSCP+启蒙之路</h1><p>这是我之前获得OSCP+认证不久之后写的一篇文章：<a href="https://mp.weixin.qq.com/s/-_6YMR-N661MF-ZHZmd7Fw">OSCP+ | 第一次考试便顺利通过！！</a>，这里面写了我整个考试过程的心路历程，以及我备战OSCP+考试的整个学习步骤，感兴趣的可以看一看（毕竟也写了不少时间嘿嘿）。</p><p>我是从攻克靶机开始接触到OSCP+的，也就是我们常说的打靶，从vulnhub下载靶机部署到本地之后便开始一下午的学习，对于当时的我来讲，即便是一个easy级别的机器，我也需要花费相当多的时间去解决，在刚开始会存在非常多我不了解的知识或者新名词，光是学习这些新的内容就会花费大量的时间，那个阶段我非常的迷茫，也不知道要学习什么，但是又什么都很想学，web渗透测试，代码审计，免杀，域渗透，听着感觉都很厉害，可是就是因为我没有具体的方向以及明确学习的目标，很焦虑也很混乱，相信也有不少人可能正在经历或者即将经历，尤其是对于大三大四的学生来讲，尤其是存在上进心的那一部分人，不过别害怕，每个人都会有这样的情况，也不要陷入到情绪里，多认识一些人，多交一些朋友，多在这个圈子里面深耕。</p><p>那么在我接触到THM、Offsec、HTB这些，我也才算是找到了一根救命稻草，但是对于一个还没有踏入社会的学生来讲，这也会是一笔很大的开销，知识付费已经贯彻到各行各业，这也是不可避免的事情，总是白嫖也不是一件好事，对于技术不佳的情况我建议是从THM开始，因为很多room都不需要花钱，即便是会员那也是很便宜的，如果你基础薄弱，这是非常不错的选择。当你学到一定程度之后，大概的基础知识都掌握了之后，可以尝试开始offsec的靶机，同样这也是锻炼你学习方法的开始，如何做到高效的学习是一件非常重要的事情，这将伴随着你的一生，这个过程我也是在不断的改善，不敢说有多高效，但是相比较之前的自己肯定是有着很大的改善。</p><h1 id="一起学习"><a href="#一起学习" class="headerlink" title="一起学习"></a>一起学习</h1><p>如果你也有想考OSCP+的想法，或者对网安，渗透，红队有着浓厚的兴趣，不妨加一下我的联系方式和我一起学习，最近我也有创建学习小组的想法，一个单纯学技术，讨论技术的地方，我的主页头像下方有我的微信和QQ以及我的公众号，期待你的到来。</p>]]></content>
       
       
+      <categories>
+          
+          <category> offsec认证 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> OSCP+ </tag>
+            
+            <tag> offsec </tag>
+            
+            <tag> 经验分享 </tag>
+            
+        </tags>
       
     </entry>
     
