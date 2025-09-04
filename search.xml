@@ -18,6 +18,20 @@
             
             <tag> SQL注入 </tag>
             
+            <tag> Linux </tag>
+            
+            <tag> sqlmap </tag>
+            
+            <tag> jinja2 </tag>
+            
+            <tag> SSTI模板注入 </tag>
+            
+            <tag> Docker </tag>
+            
+            <tag> Ping </tag>
+            
+            <tag> mount </tag>
+            
         </tags>
       
     </entry>
